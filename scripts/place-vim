@@ -18,6 +18,11 @@ while True:
         "y": pixel_cfg["y"],
         "color": Color(pixel_cfg["color_index"]),
     }
+    print("logging in...", end="")
     placer.login(username, password)
+    print("done")
+    print("placing tile...", end="")
     placer.place_tile(**place_tile_kwargs)
+    print("done")
+    print("sleeping for 21 minutes")
     sleep(21 * 60)
