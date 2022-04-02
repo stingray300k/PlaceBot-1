@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 from place_bot_vim.place_bot import Placer, Color
+from pprint import pprint
 import random
 import requests
 from time import sleep
@@ -11,18 +12,26 @@ cfg_url = "https://raw.githubusercontent.com/stingray300k/placebot/vim/out.cfg"
 
 placer = Placer()
 while True:
+    print("downloading target image config... ", end="")
     pixels_cfg = requests.get(cfg_url).json()["pixels"]
+    print("done")
+
     pixel_cfg = random.choice(pixels_cfg)
     place_tile_kwargs = {
         "x": pixel_cfg["x"],
         "y": pixel_cfg["y"],
         "color": Color(pixel_cfg["color_index"]),
     }
+    print("will try to draw tile:")
+    pprint(pixel_cfg)
+
     print("logging in... ", end="")
     placer.login(username, password)
     print("done")
+
     print("placing tile... ", end="")
     placer.place_tile(**place_tile_kwargs)
     print("done")
+
     print("sleeping for 21 minutes")
     sleep(21 * 60)
