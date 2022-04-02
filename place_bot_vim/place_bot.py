@@ -9,7 +9,7 @@ import websocket
 from PIL import Image
 import numpy as np
 
-import queries
+from . import queries
 
 
 class Color(Enum):
