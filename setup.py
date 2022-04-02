@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="PlaceBot-vim",
-    version="0.1.0",
+    version="0.1.1",
     packages=["place_bot_vim"],
     scripts=["scripts/place-vim"],
     install_requires=[
