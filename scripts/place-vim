@@ -11,6 +11,11 @@ password = os.environ["REDDIT_PW"]
 cfg_url = "https://raw.githubusercontent.com/stingray300k/placebot/vim/out.cfg"
 
 placer = Placer()
+
+print("logging in... ", end="")
+placer.login(username, password)
+print("done")
+
 while True:
     print("downloading target image config... ", end="")
     pixels_cfg = requests.get(cfg_url).json()["pixels"]
@@ -24,10 +29,6 @@ while True:
     }
     print("will try to draw tile:")
     pprint(pixel_cfg)
-
-    print("logging in... ", end="")
-    placer.login(username, password)
-    print("done")
 
     print("placing tile... ", end="")
     placer.place_tile(**place_tile_kwargs)
