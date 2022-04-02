@@ -20,4 +20,4 @@ while True:
     }
     placer.login(username, password)
     placer.place_tile(**place_tile_kwargs)
-    sleep(20 * 60)
+    sleep(21 * 60)
