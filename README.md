@@ -19,3 +19,11 @@ Installation & usage (probably best done from within a temporary virtualenv):
 pip3 install git+https://github.com/stingray300k/PlaceBot-vim
 REDDIT_USER="your_username" REDDIT_PW="your_password" place-vim
 ```
+
+Because it can still crash due to bugs (which are often resolved by simply
+starting it again), it might make sense to put this into an infinite loop once
+you've made sure that it works once:
+
+```bash
+while true; do REDDIT_USER="your_username" REDDIT_PW="your_password" place-vim; done
+```
