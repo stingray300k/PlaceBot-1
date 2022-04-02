@@ -13,9 +13,9 @@ Open an issue/PR or let us know in our
 if you have any suggestions.
 
 
-Installation & usage:
+Installation & usage (probably best done from within a temporary virtualenv):
 
 ```bash
-pip install git+https://github.com/stingray300k/PlaceBot-vim
+pip3 install git+https://github.com/stingray300k/PlaceBot-vim
 REDDIT_USER=your_username REDDIT_PW=your_password place-vim
 ```
