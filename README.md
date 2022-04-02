@@ -1,14 +1,12 @@
-# PlaceBot
+# PlaceBot-vim
 
-Draws to www.reddit.com/r/place.
+Draws vim logo to www.reddit.com/r/place.
+
+Forked from https://github.com/goatgoose/PlaceBot
 
 Usage:
-```python
-from place_bot import Placer, Color
 
-placer = Placer()
-placer.login("username", "password")
-placer.place_tile(432, 286, Color.BLACK)
+```bash
+pip install git+https://github.com/stingray300k/PlaceBot-vim
+REDDIT_USER=your_username REDDIT_PW=your_password place_vim.py
 ```
-
-See: [examples](examples/)
