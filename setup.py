@@ -5,7 +5,7 @@ setup(
     name="PlaceBot-vim",
     version="0.1.0",
     packages=["place_bot_vim"],
-    scripts=["examples/place_vim.py"],
+    scripts=["scripts/place-vim"],
     install_requires=[
         "requests",
         "websocket-client",

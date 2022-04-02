@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os
-from place_bot import Placer, Color
+from place_bot_vim.place_bot import Placer, Color
 import random
 import requests
 from time import sleep
