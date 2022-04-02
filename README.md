@@ -5,7 +5,7 @@ Draws vim logo to www.reddit.com/r/place.
 Forked from https://github.com/goatgoose/PlaceBot - thanks!!
 
 Re-downloads desired target pixel data from
-[](https://github.com/stingray300k/placebot/blob/vim/out.cfg) before each
+https://github.com/stingray300k/placebot/blob/vim/out.cfg before each
 attempt to place a tile.
 
 Open an issue/PR or let us know in our
