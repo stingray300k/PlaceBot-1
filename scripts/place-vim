@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 import os
-from place_bot_vim.place_bot import Placer, Color
+from place_bot import Placer, Color
 from pprint import pprint
 import random
 import requests
 from time import sleep
+
+
+class LoginError(Exception):
+    pass
+
+
+class PlaceError(Exception):
+    pass
+
 
 username = os.environ["REDDIT_USER"]
 password = os.environ["REDDIT_PW"]
@@ -13,7 +22,10 @@ cfg_url = "https://raw.githubusercontent.com/stingray300k/placebot/vim/out.cfg"
 placer = Placer()
 
 print("logging in... ", end="")
-placer.login(username, password)
+try:
+    placer.login(username, password)
+except AssertionError as e:
+    raise LoginError("error while logging in") from e
 print("done")
 
 while True:
@@ -25,13 +37,16 @@ while True:
     place_tile_kwargs = {
         "x": pixel_cfg["x"],
         "y": pixel_cfg["y"],
-        "color": Color(pixel_cfg["color_index"]),
+        "color": Color.from_id(pixel_cfg["color_index"]),
     }
     print("will try to draw tile:")
     pprint(pixel_cfg)
 
     print("placing tile... ", end="")
-    placer.place_tile(**place_tile_kwargs)
+    try:
+        placer.place_tile(**place_tile_kwargs)
+    except AssertionError as e:
+        raise PlaceError("error while placing tile") from e
     print("done")
 
     print("sleeping for 21 minutes")

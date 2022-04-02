@@ -2,7 +2,7 @@
 
 Draws vim logo to www.reddit.com/r/place.
 
-Forked from https://github.com/goatgoose/PlaceBot - thanks!!
+Uses https://github.com/goatgoose/PlaceBot to do the actual placing - thanks!!
 
 Re-downloads desired target pixel data from
 https://github.com/stingray300k/placebot/blob/vim/out.cfg before each
