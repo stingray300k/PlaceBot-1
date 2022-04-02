@@ -74,7 +74,7 @@ class Placer:
         )
         time.sleep(1)
 
-        assert r.status_code == 200
+        assert r.status_code == 200, "error logging in"
 
         # get the new access token
         r = self.client.get(self.REDDIT_URL)
@@ -120,11 +120,11 @@ class Placer:
             headers=headers
         )
 
-        assert r.status_code == 200
+        assert r.status_code == 200, "error setting pixel"
 
     def get_map_data(self):
         r = requests.get(self._get_map_url())
-        assert r.status_code == 200
+        assert r.status_code == 200, "error getting map data"
 
         im = Image.open(BytesIO(r.content))
         map_data = np.array(im.getdata())
