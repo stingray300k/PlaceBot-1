@@ -73,7 +73,7 @@ def login(placer: Placer, credentials: RedditCredentials):
     print("logging in... ", end="")
     try:
         placer.login(credentials.username, credentials.password)
-    except AssertionError as e:
+    except Exception as e:
         raise LoginError("error while logging in") from e
     print("done")
 
@@ -82,7 +82,7 @@ def place_tile(placer, **place_tile_kwargs):
     print("placing tile... ", end="")
     try:
         placer.place_tile(**place_tile_kwargs)
-    except AssertionError as e:
+    except Exception as e:
         raise PlaceError("error while placing tile") from e
     print("done")
 
@@ -104,9 +104,12 @@ class VimLogoPlacer:
                 except PlaceError:
                     print("error trying to place tile, retrying in 5 seconds")
                     sleep(5)
-            print("trying to log in again before next retry")
-            self.placer = Placer()
-            login(self.placer, self.credentials)
+            try:
+                print("trying to log in again before next retry")
+                self.placer = Placer()
+                login(self.placer, self.credentials)
+            except LoginError:
+                pass  # just retry later if login fails at this point
         print("giving up")
 
     def run_loop(self):
