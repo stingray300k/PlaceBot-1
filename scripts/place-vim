@@ -53,7 +53,7 @@ def check_for_new_version():
             print(
                 f"\nnew version available: "
                 f"{latest_version} (you have {installed_version})\n"
-                "considering updating via:\n"
+                "consider updating via:\n"
                 "pip3 install -U "
                 "git+https://github.com/stingray300k/PlaceBot-vim"
             )
