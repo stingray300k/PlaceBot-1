@@ -5,6 +5,7 @@ from pprint import pprint
 import random
 import requests
 from time import sleep
+from traceback import print_exc
 
 
 class LoginError(Exception):
@@ -17,7 +18,52 @@ class PlaceError(Exception):
 
 username = os.environ["REDDIT_USER"]
 password = os.environ["REDDIT_PW"]
+
+# contains pixel data for desired image:
 cfg_url = "https://raw.githubusercontent.com/stingray300k/placebot/vim/out.cfg"
+# for checking for updates (don't worry, will never update automatically):
+setup_py_url = (
+    "https://raw.githubusercontent.com/stingray300k/PlaceBot-vim/vim/setup.py"
+)
+
+
+def get_installed_version():
+    import pkg_resources
+
+    return pkg_resources.require("PlaceBot-vim")[0].version
+
+
+def get_latest_version():
+    r = requests.get(setup_py_url)
+    stripped_lines = [line.strip() for line in r.text.splitlines()]
+    version = [
+        line.split("=")[1].strip("'\",")
+        for line in stripped_lines
+        if line.startswith("version")
+    ][0]
+    return version
+
+
+def check_for_new_version():
+    print("checking for new script version... ", end="")
+    try:
+        installed_version = get_installed_version()
+        latest_version = get_latest_version()
+        if installed_version != latest_version:
+            print(
+                f"\nnew version available: "
+                f"{latest_version} (you have {installed_version})\n"
+                "considering updating via:\n"
+                "pip3 install -U "
+                "git+https://github.com/stingray300k/PlaceBot-vim"
+            )
+        else:
+            print("up to date")
+    except Exception:
+        print("")
+        print_exc()
+        print("checking for new version failed (see error message above)")
+
 
 placer = Placer()
 
@@ -29,6 +75,8 @@ except AssertionError as e:
 print("done")
 
 while True:
+    check_for_new_version()
+
     print("downloading target image config... ", end="")
     pixels_cfg = requests.get(cfg_url).json()["pixels"]
     print("done")
