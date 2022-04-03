@@ -6,7 +6,7 @@ import pytest
 import requests
 
 from place_bot import Color, Placer
-from place_vim import VimLogoPlacer, cfg_url, check_for_new_version
+from place_vim import VimLogoPlacer, cfg_url, check_for_new_version, LoginError
 
 
 @pytest.fixture()
@@ -107,3 +107,62 @@ def test_loop_with_expected_errors(
 
     assert mocked_placer_cls.call_count == 3  # TODO should be 2, minor bug
     assert vlp.placer.place_tile.call_count == 6
+
+
+def test_loop_with_unexpected_errors(
+    fake_reddit_credentials_env,
+    mocked_sleep,
+    mocked_requests,
+    mocked_version_check,
+    mocked_placer_cls
+):
+    # hack to stop infinite loop (TODO implement condition instead)
+    mocked_version_check.side_effect = RaiseAfterIterations(1)
+
+    vlp = VimLogoPlacer()
+    vlp.placer.place_tile.side_effect = Exception
+
+    with pytest.raises(StopIteration):
+        vlp.run_loop()
+
+    assert mocked_placer_cls.call_count == 3  # TODO should be 2, minor bug
+    assert vlp.placer.place_tile.call_count == 6
+
+
+def test_crash_if_first_login_fails(
+    fake_reddit_credentials_env,
+    mocked_sleep,
+    mocked_requests,
+    mocked_version_check,
+    mocked_placer_cls
+):
+    # hack to stop infinite loop (TODO implement condition instead)
+    mocked_version_check.side_effect = RaiseAfterIterations(1)
+
+    vlp = VimLogoPlacer()
+    vlp.placer.login.side_effect = Exception
+
+    with pytest.raises(LoginError):
+        vlp.run_loop()
+
+
+def test_retry_if_later_logins_fail(
+    fake_reddit_credentials_env,
+    mocked_sleep,
+    mocked_requests,
+    mocked_version_check,
+    mocked_placer_cls
+):
+    # hack to stop infinite loop (TODO implement condition instead)
+    mocked_version_check.side_effect = RaiseAfterIterations(2)
+
+    vlp = VimLogoPlacer()
+    vlp.placer.place_tile.side_effect = Exception
+    vlp.placer.login.side_effect = RaiseAfterIterations(3)
+
+    with pytest.raises(StopIteration):
+        vlp.run_loop()
+
+    assert mocked_version_check.call_count == 2+1
+    assert mocked_placer_cls.call_count == 2*2+1  # TODO bug, should be 2*2
+    assert vlp.placer.place_tile.call_count == 2*2*3
