@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from dataclasses import dataclass
 import os
 from place_bot import Placer, Color
 from pprint import pprint
@@ -16,8 +17,11 @@ class PlaceError(Exception):
     pass
 
 
-username = os.environ["REDDIT_USER"]
-password = os.environ["REDDIT_PW"]
+@dataclass
+class RedditCredentials:
+    username: str
+    password: str
+
 
 # contains pixel data for desired image:
 cfg_url = "https://raw.githubusercontent.com/stingray300k/placebot/vim/out.cfg"
@@ -65,10 +69,10 @@ def check_for_new_version():
         print("checking for new version failed (see error message above)")
 
 
-def login(placer: Placer):
+def login(placer: Placer, credentials: RedditCredentials):
     print("logging in... ", end="")
     try:
-        placer.login(username, password)
+        placer.login(credentials.username, credentials.password)
     except AssertionError as e:
         raise LoginError("error while logging in") from e
     print("done")
@@ -86,24 +90,27 @@ def place_tile(placer, **place_tile_kwargs):
 class VimLogoPlacer:
     def __init__(self):
         self.placer = Placer()
-
+        self.credentials = RedditCredentials(
+            username=os.environ["REDDIT_USER"],
+            password=os.environ["REDDIT_PW"],
+        )
 
     def place_tile_with_retries(self, **place_tile_kwargs):
         for i in range(2):  # retries with new login attempts
             for j in range(3):  # retries without new login attempts
                 try:
-                    self.place_tile(self.placer, **place_tile_kwargs)
+                    place_tile(self.placer, **place_tile_kwargs)
                     return
                 except PlaceError:
                     print("error trying to place tile, retrying in 5 seconds")
                     sleep(5)
             print("trying to log in again before next retry")
-            placer = Placer()
-            self.login(placer)
+            self.placer = Placer()
+            login(self.placer, self.credentials)
         print("giving up")
 
     def run_loop(self):
-        login(self.placer)
+        login(self.placer, self.credentials)
 
         while True:
             check_for_new_version()
@@ -127,6 +134,10 @@ class VimLogoPlacer:
             sleep(20 * 60 + 10)
 
 
-if __name__ == "__main__":
+def main():
     vim_logo_placer = VimLogoPlacer()
     vim_logo_placer.run_loop()
+
+
+if __name__ == "__main__":
+    main()
