@@ -146,8 +146,8 @@ class VimLogoPlacer:
 
             self.place_tile_with_retries(**place_tile_kwargs)
 
-            print("sleeping for 20 minutes and 10 seconds")
-            sleep(20 * 60 + 10)
+            print("sleeping for 5 minutes and 10 seconds")
+            sleep(5 * 60 + 10)
 
 
 def main():
