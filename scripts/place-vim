@@ -49,5 +49,5 @@ while True:
         raise PlaceError("error while placing tile") from e
     print("done")
 
-    print("sleeping for 21 minutes")
-    sleep(21 * 60)
+    print("sleeping for 20 minutes and 10 seconds")
+    sleep(20 * 60 + 10)
