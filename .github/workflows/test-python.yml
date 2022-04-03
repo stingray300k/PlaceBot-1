@@ -28,3 +28,6 @@ jobs:
       - name: Test with pytest
         run: |
           pytest
+      - name: Test script
+        run: |
+          place-vim 2>&1 | grep "KeyError: 'REDDIT_USER'"
