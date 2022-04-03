@@ -83,43 +83,50 @@ def place_tile(placer, **place_tile_kwargs):
     print("done")
 
 
-def place_tile_with_retries(**place_tile_kwargs):
-    global placer
-    for i in range(2):  # retries with new login attempts
-        for j in range(3):  # retries without new login attempts
-            try:
-                place_tile(placer, **place_tile_kwargs)
-                return
-            except PlaceError:
-                print("error trying to place tile, retrying in 5 seconds")
-                sleep(5)
-        print("trying to log in again before next retry")
-        placer = Placer()
-        login(placer)
-    print("giving up")
+class VimLogoPlacer:
+    def __init__(self):
+        self.placer = Placer()
 
 
-placer = Placer()
+    def place_tile_with_retries(self, **place_tile_kwargs):
+        for i in range(2):  # retries with new login attempts
+            for j in range(3):  # retries without new login attempts
+                try:
+                    self.place_tile(self.placer, **place_tile_kwargs)
+                    return
+                except PlaceError:
+                    print("error trying to place tile, retrying in 5 seconds")
+                    sleep(5)
+            print("trying to log in again before next retry")
+            placer = Placer()
+            self.login(placer)
+        print("giving up")
 
-login(placer)
+    def run_loop(self):
+        login(self.placer)
 
-while True:
-    check_for_new_version()
+        while True:
+            check_for_new_version()
 
-    print("downloading target image config... ", end="")
-    pixels_cfg = requests.get(cfg_url).json()["pixels"]
-    print("done")
+            print("downloading target image config... ", end="")
+            pixels_cfg = requests.get(cfg_url).json()["pixels"]
+            print("done")
 
-    pixel_cfg = random.choice(pixels_cfg)
-    place_tile_kwargs = {
-        "x": pixel_cfg["x"],
-        "y": pixel_cfg["y"],
-        "color": Color.from_id(pixel_cfg["color_index"]),
-    }
-    print("will try to draw tile:")
-    pprint(pixel_cfg)
+            pixel_cfg = random.choice(pixels_cfg)
+            place_tile_kwargs = {
+                "x": pixel_cfg["x"],
+                "y": pixel_cfg["y"],
+                "color": Color.from_id(pixel_cfg["color_index"]),
+            }
+            print("will try to draw tile:")
+            pprint(pixel_cfg)
 
-    place_tile_with_retries(**place_tile_kwargs)
+            self.place_tile_with_retries(**place_tile_kwargs)
 
-    print("sleeping for 20 minutes and 10 seconds")
-    sleep(20 * 60 + 10)
+            print("sleeping for 20 minutes and 10 seconds")
+            sleep(20 * 60 + 10)
+
+
+if __name__ == "__main__":
+    vim_logo_placer = VimLogoPlacer()
+    vim_logo_placer.run_loop()
