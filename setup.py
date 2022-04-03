@@ -12,6 +12,6 @@ setup(
     },
     install_requires=[
         "requests",
-        "PlaceBot @ git+https://github.com/goatgoose/PlaceBot@c4f87b5"
+        "PlaceBot @ git+https://github.com/goatgoose/PlaceBot@e62c6e1"
     ],
 )
