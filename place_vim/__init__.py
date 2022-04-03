@@ -78,6 +78,13 @@ def login(placer: Placer, credentials: RedditCredentials):
     print("done")
 
 
+def download_target_image_cfg():
+    print("downloading target image config... ", end="")
+    pixels_cfg = requests.get(cfg_url).json()["pixels"]
+    print("done")
+    return pixels_cfg
+
+
 def place_tile(placer, **place_tile_kwargs):
     print("placing tile... ", end="")
     try:
@@ -113,14 +120,20 @@ class VimLogoPlacer:
         print("giving up")
 
     def run_loop(self):
+        # run these once at the start without retry logic
         login(self.placer, self.credentials)
+        pixels_cfg = None
 
         while True:
             check_for_new_version()
 
-            print("downloading target image config... ", end="")
-            pixels_cfg = requests.get(cfg_url).json()["pixels"]
-            print("done")
+            try:
+                pixels_cfg = download_target_image_cfg()
+            except Exception:
+                if pixels_cfg is not None:
+                    print("downloading target image failed, reusing old one")
+                else:
+                    raise
 
             pixel_cfg = random.choice(pixels_cfg)
             place_tile_kwargs = {
