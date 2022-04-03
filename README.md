@@ -1,6 +1,6 @@
 # PlaceBot-vim
 
-Draws vim logo to www.reddit.com/r/place.
+Draw a small vim logo ![](https://cdn.discordapp.com/attachments/959453006724747328/960102408577499136/placevim-7x7-orig.png) on www.reddit.com/r/place.
 
 Uses https://github.com/goatgoose/PlaceBot to do the actual placing - thanks!!
 
